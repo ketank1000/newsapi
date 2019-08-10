@@ -1,0 +1,14 @@
+django
+djangorestframework
+markdown
+django-filter
+requests
+lxml
+newspaper3k
+mysqlclient
+nltk
+googletrans
+
+
+mariadb-server
+mariadb-devel

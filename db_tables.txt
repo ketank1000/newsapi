@@ -1,0 +1,18 @@
+create table News(
+id int NOT NULL AUTO_INCREMENT,
+url varchar(500) NOT NULL UNIQUE,
+title varchar(200),
+created_date datetime,
+summary varchar(500),
+keywords varchar(200),
+category varchar(200),
+location varchar(50),
+image varchar(300),
+PRIMARY KEY (id));
+
+create table failed_news(
+id int NOT NULL AUTO_INCREMENT,
+url varchar(500) NOT NULL UNIQUE,
+created_date datetime,
+error varchar(500),
+PRIMARY KEY (id));
