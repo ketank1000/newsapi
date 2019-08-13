@@ -1,3 +1,5 @@
+python36 python36-devel
+
 django
 djangorestframework
 markdown
@@ -9,8 +11,13 @@ mysqlclient
 nltk
 googletrans
 google_images_download
+influxdb
 
-
-mariadb-server	
+mariadb
+mariadb-server
 mariadb-devel
-nginx
+git
+influxdb
+chronograf
+jenkins
+java
