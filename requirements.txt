@@ -8,7 +8,9 @@ newspaper3k
 mysqlclient
 nltk
 googletrans
+google_images_download
 
 
-mariadb-server
+mariadb-server	
 mariadb-devel
+nginx

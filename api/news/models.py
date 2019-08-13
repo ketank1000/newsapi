@@ -7,7 +7,7 @@ class News(models.Model):
 	id = models.AutoField(primary_key=True)
 	url = models.CharField(max_length=255,unique=True,null=False)
 	title = models.CharField(max_length=200)
-	summary = models.CharField(max_length=500)
+	text = models.TextField(max_length=5000)
 	created_date = models.DateTimeField()
 	keywords = models.CharField(max_length=200)
 	category = models.CharField(max_length=200)

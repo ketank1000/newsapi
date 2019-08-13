@@ -8,6 +8,7 @@
 ######################################################################################################
 
 import MySQLdb
+from influxdb import InfluxDBClient
 
 class Database:
     """
@@ -21,6 +22,7 @@ class Database:
         Contructor creates connection object and cursor
         """
         self._db_connection = MySQLdb.connect('localhost', 'root', '', 'news')
+        self._db_connection.set_character_set('utf8')
         self._db_cur = self._db_connection.cursor()
 
     def query(self, query ):
@@ -68,7 +70,28 @@ class Database:
 
         return all_articles
 
+    def insert_into_influx(self, data):
+        """
+        Will push all analysis data into influxdb
+        this data will be used for ploting graphs
+        Input: dict
+        """
+        client = InfluxDBClient('localhost',
+                                '8086',
+                                'newsapi',
+                                'newsapi',
+                                'monitor_newsapi')
+        data_point = [{"measurement":"per_hr_data",
+                    "fields": data
+                    }]
+
+        client.write_points(data_point)
+
+
 
     def __del__(self):
         self._db_connection.close()
+
+
+
 

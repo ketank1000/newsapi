@@ -10,13 +10,13 @@ class NewsSerializer(serializers.ModelSerializer):
 				(defalut english)
 	returns the data in API and JSON format
 	translates to given language
-	return : id, url, title, summary, created_date, image
+	return : id, url, title, text, created_date, image
 	"""
 
 	# overides the serilized data from model
-	# Used from translating the title and summay to given lang
+	# Used from translating the title and text to given lang
 	title = serializers.SerializerMethodField()
-	summary = serializers.SerializerMethodField()
+	text = serializers.SerializerMethodField()
 
 	def get_title(self, obj):
 		"""
@@ -33,9 +33,9 @@ class NewsSerializer(serializers.ModelSerializer):
 		else:
 			return obj.title
 
-	def get_summary(self, obj):
+	def get_text(self, obj):
 		"""
-		Method filed to translate to given lang for summary
+		Method filed to translate to given lang for text
 		"""
 		lang = self.context.get('lang')
 		if (lang is not 'en'):
@@ -43,14 +43,14 @@ class NewsSerializer(serializers.ModelSerializer):
 				'translate.google.com',
 				'translate.google.co.kr',
 			])
-			translation = translator.translate(obj.summary, dest=lang)
+			translation = translator.translate(obj.text, dest=lang)
 			return translation.text
 		else:
-			return obj.summary
+			return obj.text
 
 	class Meta:
 		model = News
-		fields = ('id','url','title','summary','created_date','image')
+		fields = ('id','url','title','text','created_date','image')
 		# fields = '__all__'
 
 class failed_newsSerializer(serializers.ModelSerializer):
