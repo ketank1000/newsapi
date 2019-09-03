@@ -12,11 +12,13 @@ nltk
 googletrans
 google_images_download
 influxdb
+apscheduler
 
 mariadb
 mariadb-server
 mariadb-devel
 git
+mod_wsgi
 influxdb
 chronograf
 jenkins

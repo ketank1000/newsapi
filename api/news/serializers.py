@@ -50,7 +50,7 @@ class NewsSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = News
-		fields = ('id','url','title','text','created_date','image')
+		fields = ('id','url','title','text','created_date','image','category')
 		# fields = '__all__'
 
 class failed_newsSerializer(serializers.ModelSerializer):
