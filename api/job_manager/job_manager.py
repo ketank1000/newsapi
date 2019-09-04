@@ -17,6 +17,7 @@ import threading
 from google_images_download import google_images_download
 import MySQLdb
 from influxdb import InfluxDBClient
+import random
 
 class Job_manager:
 	global _db_connection
@@ -153,7 +154,7 @@ class Job_manager:
 		"""
 		keywords = title.replace(",","")
 		arguments = {"keywords": keywords,
-					"limit":1,
+					"limit":5,
 					"format": "jpg",
 					"no_download":True}
 
@@ -163,7 +164,7 @@ class Job_manager:
 		# path is tuple so path[0]
 		# path[0][title] is dict for key as title and list_of image as value
 		# path[0][title][0] to pick first image from list
-		return (path[0][keywords][0])
+		return (path[0][keywords][random.choice([0,1,2,3])])
 
 	def check_image_path(self, image, title):
 		"""
@@ -211,19 +212,30 @@ class Job_manager:
 		# genetate the created data in required Mysql format
 		created_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		# remove the unneccessary quotes and next line
-		text = article.summary.replace('\n',' ').replace('"',"'").replace("“","'").replace("”","'")
-		# if the summay is more than 500 words truncate the text to 500 words
+		text = article.text.replace('\n',' ').replace('"',"'").replace("“","'").replace("”","'")
+		# if the summay is more than 200 words use summary
+		if len(text) > 250:
+			text = article.summary.replace('\n',' ').replace('"',"'").replace("“","'").replace("”","'")
+		# if the summay is more than 5000 words truncate the text to 500 words
 		if len(text) > 5000:
 			text = text[:4999]
 
 		# if text and title are empty then the article failed to get the requred data
 		# add this article in failed table for later use
 		# also return if this case happens
-		if text is "" or title is "" :
+		if text == "" or title == "" :
 			query_string_issue = "INSERT INTO failed_news (url,created_date,error) "
 			values = 'values("%s","%s","%s")' %(source, created_date, 
 				"NO text and Tile found")
 			self.query(query_string + values)
+			self.fail_count == self.fail_count + 1
+			return
+		if len(text) < 50:
+			query_string_issue = "INSERT INTO failed_news (url,created_date,error) "
+			values = 'values("%s","%s","%s")' %(source, created_date, 
+				"Text filed less than 50")
+			self.query(query_string + values)
+			self.fail_count == self.fail_count + 1
 			return
 
 		# importent keywords from the article
@@ -236,7 +248,7 @@ class Job_manager:
 		image = article.top_image
 
 		# get new image if the article is having default image
-		if image is self.toi_image_default:
+		if image == self.toi_image_default:
 			image = self.get_image(title)
 
 		# check image path
