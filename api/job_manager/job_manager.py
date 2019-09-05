@@ -311,7 +311,7 @@ class Job_manager:
 			# push into db
 			self.query(query_str)
 		except Exception as e:
-			print("failed to insert query ==> %s" %(query))
+			print("failed to insert query ==> %s" %(query_str))
 
 	def add_news(self):
 		# start time of the script
