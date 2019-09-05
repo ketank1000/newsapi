@@ -63,7 +63,9 @@ class Job_manager:
 		'/video',
 		'/rss.cms',
 		'/navbharattimes',
-		'/weather'
+		'/weather',
+		'/citizen-reporter',
+		'/m.'
 		]
 
 	def query(self, query ):
@@ -232,7 +234,7 @@ class Job_manager:
 			return
 		if len(text) < 50:
 			query_string_issue = "INSERT INTO failed_news (url,created_date,error) "
-			values = 'values("%s","%s","%s")' %(source, created_date, 
+			values = 'values("%s","%s","%s")' %(source, created_date,
 				"Text filed less than 50")
 			self.query(query_string + values)
 			self.fail_count == self.fail_count + 1
@@ -301,12 +303,13 @@ class Job_manager:
 					if valid_article is True:
 						self.all_article_data[url] = category
 
-	def handeling_failed_articles(self, query):
+	def handeling_failed_articles(self, query_str):
 		"""
 		Handles try and catch for faild articles for puching it into db
 		"""
 		try:
-			pass
+			# push into db
+			self.query(query_str)
 		except Exception as e:
 			print("failed to insert query ==> %s" %(query))
 
@@ -361,6 +364,8 @@ class Job_manager:
 					self.handeling_failed_articles(query_string + values)
 				elif "Duplicate entry" in str(e):
 					self.duplicate_entry = self.duplicate_entry + 1
+					values = 'values("%s","%s","%s")' %(url,created_date,"Duplicate entry")
+					self.handeling_failed_articles(query_string + values)
 				elif "Incorrect string value" in str(e):
 					values = 'values("%s","%s","%s")' %(url,created_date,"Incorrect string value")
 					self.fail_count = self.fail_count + 1
@@ -382,13 +387,16 @@ class Job_manager:
 
 		print(datetime.datetime.now() - tm_st)
 
-		# data_point = {'added':str(self.article_added),
-		# 			'failed':str(self.fail_count),
-		# 			'404_error':str(self.not_found_404),
-		# 			'time_taken':str(datetime.datetime.now() - tm_st)}
+		data_point = {'added':str(self.article_added),
+					'failed':str(self.fail_count),
+					'404_error':str(self.not_found_404),
+					'time_taken':str(datetime.datetime.now() - tm_st)}
 
-		# insert_into_influx()
+		self.insert_into_influx(data_point)
 
+def start_scan():
+	jb = Job_manager()
+	jb.add_news()
 
 
 

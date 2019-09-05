@@ -3,7 +3,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from job_manager import job_manager
 
 def start():
-	jb = job_manager.Job_manager()
 	scheduler = BackgroundScheduler()
-	scheduler.add_job(jb.add_news, 'interval', minutes=1)
+	scheduler.add_job(job_manager.start_scan, 'interval', minutes=30)
 	scheduler.start()
